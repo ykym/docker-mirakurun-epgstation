@@ -19,8 +19,18 @@ services:
             - /dev/pt3video1:/dev/pt3video1
             - /dev/pt3video2:/dev/pt3video2
             - /dev/pt3video3:/dev/pt3video3
+            - /dev/px4video0:/dev/px4video0
+            - /dev/px4video1:/dev/px4video1
+            - /dev/px4video2:/dev/px4video2
+            - /dev/px4video3:/dev/px4video3
+            - /dev/px4video4:/dev/px4video4
+            - /dev/px4video5:/dev/px4video5
+            - /dev/px4video6:/dev/px4video6
+            - /dev/px4video7:/dev/px4video7
             #- /dev/bus/usb/00x/00x # card reader
-        #restart: always
+        environment:
+            TZ: "Asia/Tokyo"
+        restart: always
 
     mysql:
         image: mariadb:10.3
@@ -43,19 +53,23 @@ services:
                 - CPUCORE=2
         container_name: epgstation
         volumes:
+            - /etc/passwd:/etc/passwd:ro
             - /etc/localtime:/etc/localtime:ro
             - ./epgstation/config:/usr/local/EPGStation/config
             - ./epgstation/data:/usr/local/EPGStation/data
             - ./epgstation/thumbnail:/usr/local/EPGStation/thumbnail
             - ./epgstation/logs:/usr/local/EPGStation/logs
-            - ./recorded:/usr/local/EPGStation/recorded
+            - /recdisk/share/recorded:/usr/local/EPGStation/recorded
+            - /recdisk/share/encode_tmp:/usr/local/EPGStation/encode_tmp
         links:
             - mirakurun:mirakurun
             - mysql:mysql
         ports:
             - "8888:8888"
         #user: "1000:1000"
-        #restart: always
+        environment:
+            TZ: "Asia/Tokyo"
+        restart: always
 
 volumes:
     mysql-db:
