@@ -2,12 +2,19 @@ FROM debian:stretch
 EXPOSE 8888
 ARG CPUCORE="1"
 ENV DEV="make gcc git g++ automake curl wget autoconf build-essential python2.7 libass-dev libfreetype6-dev libsdl1.2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev pkg-config texinfo zlib1g-dev"
-ENV FFMPEG_VERSION=3.4
+ENV FFMPEG_VERSION=4.1
 
 RUN apt-get update && \
     apt-get -y install $DEV && \
     apt-get -y install yasm libx264-dev libmp3lame-dev libopus-dev && \
     apt-get -y install libasound2 libass5 libvdpau1 libva-x11-1 libva-drm1 libxcb-shm0 libxcb-xfixes0 libxcb-shape0 libvorbisenc2 libtheora0 && \
+    apt-get -y install libvpx-dev && \
+    apt-get -y install openssh-client rsync nkf && \
+    dpkg --add-architecture i386 && \
+    curl -fsSL https://dl.winehq.org/wine-builds/winehq.key | apt-key add - && \
+    echo "deb http://dl.winehq.org/wine-builds/debian/ stretch main" >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get -y install winehq-stable && \
 \
 #ffmpeg build
 \
@@ -28,6 +35,7 @@ RUN apt-get update && \
       --enable-libtheora \
       --enable-libvorbis \
       --enable-libx264 \
+      --enable-libvpx \
       --enable-nonfree \
       --disable-debug \
       --disable-doc \
