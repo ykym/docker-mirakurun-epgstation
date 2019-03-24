@@ -11,6 +11,14 @@
     },
     "ffmpeg": "/usr/local/bin/ffmpeg",
     "ffprobe": "/usr/local/bin/ffprobe",
+    "basicAuth": {
+        "user": "username****",
+        "password": "password****"
+    },
+    "convertDBStr": "oneByteWithCH",
+    "recordedFormat": "%TITLE%_%YEAR%%MONTH%%DAY%%HOUR%%MIN%_%CHNAME%_%TYPE%",
+    "isEnabledDropCheck": true,
+    "thumbnailPosition": "200",
     "excludeServices": [],
     "maxEncode": 2,
     "encode": [
