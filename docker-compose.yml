@@ -10,10 +10,14 @@ services:
         privileged: true
         ports:
             - "40772:40772"
+        #extra_hosts:
+            #- "bondriverproxy:172.17.0.1" # BonDriverProxy Server
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - ./mirakurun/conf:/usr/local/etc/mirakurun
             - ./mirakurun/db:/usr/local/var/db/mirakurun
+        environment:
+            TZ: "Asia/Tokyo"
         devices:
             - /dev/pt3video0:/dev/pt3video0
             - /dev/pt3video1:/dev/pt3video1
@@ -28,9 +32,7 @@ services:
             - /dev/px4video6:/dev/px4video6
             - /dev/px4video7:/dev/px4video7
             #- /dev/bus/usb/00x/00x # card reader
-        environment:
-            TZ: "Asia/Tokyo"
-        restart: always
+        #restart: always
 
     mysql:
         image: mariadb:10.3
@@ -59,17 +61,18 @@ services:
             - ./epgstation/data:/usr/local/EPGStation/data
             - ./epgstation/thumbnail:/usr/local/EPGStation/thumbnail
             - ./epgstation/logs:/usr/local/EPGStation/logs
-            - /recdisk/share/recorded:/usr/local/EPGStation/recorded
-            - /recdisk/share/encode_tmp:/usr/local/EPGStation/encode_tmp
+            - ./epgstation/recorded:/usr/local/EPGStation/recorded
+            #- /recdisk/share/recorded:/usr/local/EPGStation/recorded
+            #- /recdisk/share/encode_tmp:/usr/local/EPGStation/encode_tmp
+        environment:
+            TZ: "Asia/Tokyo"
         links:
             - mirakurun:mirakurun
             - mysql:mysql
         ports:
             - "8888:8888"
         #user: "1000:1000"
-        environment:
-            TZ: "Asia/Tokyo"
-        restart: always
+        #restart: always
 
 volumes:
     mysql-db:
