@@ -15,11 +15,11 @@ recpt1/recbond/libaribb25 を導入する
 ## インストール手順
 
 ```
-$ git clone https://github.com/l3tnun/docker-mirakurun-epgstation.git
+$ git clone https://github.com/ykym/docker-mirakurun-epgstation.git
 $ cd docker-mirakurun-epgstation
 
 # libairbb25系は派生が多いため気に入ったものがあれば以下のディレクトリに配置
-$ git clone https://github.com/epgdatacapbon/libaribb25 ./mirakurun/libaribb25
+ex) $ git clone https://github.com/epgdatacapbon/libaribb25 ./mirakurun/libaribb25
 
 $ sudo docker-compose pull
 $ sudo docker-compose build
