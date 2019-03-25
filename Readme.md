@@ -7,7 +7,8 @@ docker-mirakurun-epgstation
 
 Docker, docker-compose の導入が必須
 
-PT3 + [m-tsudo/pt3](https://github.com/m-tsudo/pt3) の組み合わせを想定
+PT3 + [m-tsudo/pt3](https://github.com/m-tsudo/pt3) 、PX-Q3PE4、BonDriverProxyClientなど、複数の組み合わせを想定しているため
+recpt1/recbond/libaribb25 を導入する。
 
 ホスト上の pcscd は停止する
 
@@ -16,6 +17,10 @@ PT3 + [m-tsudo/pt3](https://github.com/m-tsudo/pt3) の組み合わせを想定
 ```
 $ git clone https://github.com/l3tnun/docker-mirakurun-epgstation.git
 $ cd docker-mirakurun-epgstation
+
+# libairbb25系は派生が多いため気に入ったものがあれば以下のディレクトリに配置
+$ git clone https://github.com/epgdatacapbon/libaribb25 ./mirakurun/libaribb25
+
 $ sudo docker-compose pull
 $ sudo docker-compose build
 
