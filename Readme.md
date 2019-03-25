@@ -8,7 +8,7 @@ docker-mirakurun-epgstation
 Docker, docker-compose の導入が必須
 
 PT3 + [m-tsudo/pt3](https://github.com/m-tsudo/pt3) 、PX-Q3PE4、BonDriverProxyClientなど、複数の組み合わせを想定しているため
-recpt1/recbond/libaribb25 を導入する。
+recpt1/recbond/libaribb25 を導入する
 
 ホスト上の pcscd は停止する
 
