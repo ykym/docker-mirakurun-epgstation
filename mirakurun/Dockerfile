@@ -52,7 +52,7 @@ PACKET_FIFO_SIZE=32\n\
 TS_FIFO_SIZE=64\n\
 TSPACKET_BUFSRZE=192512' > /usr/local/lib/BonDriver/BonDriver_Proxy-T0.so.conf && \
 \
-    git clone https://github.com/epgdatacapbon/recbond /tmp/recbond && \
+    git clone https://github.com/ykym/recbond /tmp/recbond && \
     cd /tmp/recbond && \
     ./autogen.sh && \
     ./configure --enable-b25 && \
