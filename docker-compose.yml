@@ -31,6 +31,7 @@ services:
             - /dev/px4video5:/dev/px4video5
             - /dev/px4video6:/dev/px4video6
             - /dev/px4video7:/dev/px4video7
+            - /dev/dvb:/dev/dvb
             #- /dev/bus/usb/00x/00x # card reader
         #restart: always
 
