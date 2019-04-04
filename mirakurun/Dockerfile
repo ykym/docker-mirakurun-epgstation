@@ -60,6 +60,14 @@ TSPACKET_BUFSRZE=192512' > /usr/local/lib/BonDriver/BonDriver_Proxy-T0.so.conf &
     make && \
     make install && \
 \
+# recdvb
+\
+    git clone https://github.com/epgdatacapbon/recdvb /tmp/recdvb && \
+    cd /tmp/recdvb && \
+    ./autogen.sh && \
+    ./configure --enable-b25 && \
+    make && \
+    make install && \
 # recpt1
 \
     git clone https://github.com/stz2012/recpt1 /tmp/recpt1 && \
