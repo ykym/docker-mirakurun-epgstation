@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 EXPOSE 8888
 ARG CPUCORE="1"
 ENV DEV="make gcc git g++ automake curl wget autoconf build-essential python2.7 libass-dev libfreetype6-dev libsdl1.2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev pkg-config texinfo zlib1g-dev"
@@ -7,12 +7,12 @@ ENV FFMPEG_VERSION=4.1
 RUN apt-get update && \
     apt-get -y install $DEV && \
     apt-get -y install yasm libx264-dev libmp3lame-dev libopus-dev && \
-    apt-get -y install libasound2 libass5 libvdpau1 libva-x11-1 libva-drm1 libxcb-shm0 libxcb-xfixes0 libxcb-shape0 libvorbisenc2 libtheora0 && \
+    apt-get -y install libasound2 libass9 libvdpau1 libva-x11-2 libva-drm2 libxcb-shm0 libxcb-xfixes0 libxcb-shape0 libvorbisenc2 libtheora0 && \
     apt-get -y install libvpx-dev && \
     apt-get -y install openssh-client rsync nkf && \
     dpkg --add-architecture i386 && \
     curl -fsSL https://dl.winehq.org/wine-builds/winehq.key | apt-key add - && \
-    echo "deb http://dl.winehq.org/wine-builds/debian/ stretch main" >> /etc/apt/sources.list && \
+    echo "deb http://dl.winehq.org/wine-builds/debian/ buster main" >> /etc/apt/sources.list && \
     apt-get update && \
     apt-get -y install winehq-stable && \
 \
@@ -53,6 +53,9 @@ RUN apt-get update && \
     git clone https://github.com/l3tnun/EPGStation.git && \
     cd /usr/local/EPGStation && \
     npm install && \
+# ffmpeg thumbnail option patch
+    sed -i 's/-i %INPUT% -ss ${ thumbnailPosition }/-ss ${ thumbnailPosition } -i %INPUT%/g' /usr/local/EPGStation/src/server/Model/Operator/Thumbnail/ThumbnailManageModel.ts && \
+#
     npm run build && \
 \
 # 不要なパッケージを削除
