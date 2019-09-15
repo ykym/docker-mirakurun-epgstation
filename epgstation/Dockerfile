@@ -54,7 +54,7 @@ RUN apt-get update && \
     cd /usr/local/EPGStation && \
     npm install && \
 # ffmpeg thumbnail option patch
-    sed -i 's/-i %INPUT% -ss ${ thumbnailPosition }/-ss ${ thumbnailPosition } -i %INPUT%/g' /usr/local/EPGStation/src/server/Model/Operator/Thumbnail/ThumbnailManageModel.ts && \
+    sed -i 's/-i %INPUT% -ss ${ thumbnailPosition }/-ss ${ thumbnailPosition } -i %INPUT% -vf yadif=0:-1:1/g' /usr/local/EPGStation/src/server/Model/Operator/Thumbnail/ThumbnailManageModel.ts && \
 #
     npm run build && \
 \
