@@ -1,48 +1,17 @@
 FROM debian:buster
 EXPOSE 8888
 ARG CPUCORE="1"
-ENV DEV="make gcc git g++ automake curl wget autoconf build-essential python2.7 libass-dev libfreetype6-dev libsdl1.2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev pkg-config texinfo zlib1g-dev"
-ENV FFMPEG_VERSION=4.1
+ENV DEV="make gcc git g++ automake curl wget autoconf build-essential python2.7" 
 
 RUN apt-get update && \
     apt-get -y install $DEV && \
-    apt-get -y install yasm libx264-dev libmp3lame-dev libopus-dev && \
-    apt-get -y install libasound2 libass9 libvdpau1 libva-x11-2 libva-drm2 libxcb-shm0 libxcb-xfixes0 libxcb-shape0 libvorbisenc2 libtheora0 && \
-    apt-get -y install libvpx-dev && \
     apt-get -y install openssh-client rsync nkf && \
+    apt-get -y install ffmpeg && \
     dpkg --add-architecture i386 && \
     curl -fsSL https://dl.winehq.org/wine-builds/winehq.key | apt-key add - && \
     echo "deb http://dl.winehq.org/wine-builds/debian/ buster main" >> /etc/apt/sources.list && \
     apt-get update && \
     apt-get -y install winehq-stable && \
-\
-#ffmpeg build
-\
-    mkdir /tmp/ffmpeg_sources && \
-    cd /tmp/ffmpeg_sources && \
-    wget http://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2 -O ffmpeg.tar.bz2 && \
-    tar xjvf ffmpeg.tar.bz2 && \
-    cd /tmp/ffmpeg_sources/ffmpeg* && \
-    ./configure \
-      --prefix=/usr/local \
-      --disable-shared \
-      --pkg-config-flags=--static \
-      --enable-gpl \
-      --enable-libass \
-      --enable-libfreetype \
-      --enable-libmp3lame \
-      --enable-libopus \
-      --enable-libtheora \
-      --enable-libvorbis \
-      --enable-libx264 \
-      --enable-libvpx \
-      --enable-nonfree \
-      --disable-debug \
-      --disable-doc \
-    && \
-    cd /tmp/ffmpeg_sources/ffmpeg* && \
-    make -j${CPUCORE} && \
-    make install && \
 \
 # nodejs install
     curl -sL https://deb.nodesource.com/setup_10.x | bash - && \

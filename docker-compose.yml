@@ -23,6 +23,10 @@ services:
             - /dev/pt3video1:/dev/pt3video1
             - /dev/pt3video2:/dev/pt3video2
             - /dev/pt3video3:/dev/pt3video3
+            - /dev/pt3video4:/dev/pt3video4
+            - /dev/pt3video5:/dev/pt3video5
+            - /dev/pt3video6:/dev/pt3video6
+            - /dev/pt3video7:/dev/pt3video7
             - /dev/px4video0:/dev/px4video0
             - /dev/px4video1:/dev/px4video1
             - /dev/px4video2:/dev/px4video2
@@ -33,7 +37,7 @@ services:
             - /dev/px4video7:/dev/px4video7
             - /dev/dvb:/dev/dvb
             #- /dev/bus/usb/00x/00x # card reader
-        #restart: always
+        restart: always
 
     mysql:
         image: mariadb:10.3
@@ -47,7 +51,7 @@ services:
             MYSQL_DATABASE: epgstation
             TZ: "Asia/Tokyo"
         command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --performance-schema=false --expire_logs_days=1
-        #restart: always
+        restart: always
 
     epgstation:
         build:
@@ -73,7 +77,7 @@ services:
         ports:
             - "8888:8888"
         #user: "1000:1000"
-        #restart: always
+        restart: always
 
 volumes:
     mysql-db:
