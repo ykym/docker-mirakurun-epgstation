@@ -10,6 +10,7 @@ services:
         privileged: true
         ports:
             - "40772:40772"
+            - "9229:9229"
         #extra_hosts:
             #- "bondriverproxy:172.17.0.1" # BonDriverProxy Server
         volumes:
@@ -40,7 +41,7 @@ services:
         restart: always
 
     mysql:
-        image: mariadb:10.3
+        image: mariadb:10.4
         container_name: mysql
         volumes:
             - mysql-db:/var/lib/mysql
@@ -76,6 +77,7 @@ services:
             - mysql:mysql
         ports:
             - "8888:8888"
+            - "8889:8889"
         #user: "1000:1000"
         restart: always
 
