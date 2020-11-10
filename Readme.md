@@ -24,10 +24,12 @@ ex) $ git clone https://github.com/epgdatacapbon/libaribb25 ./mirakurun/libaribb
 $ sudo docker-compose pull
 $ sudo docker-compose build
 
-#チャンネル設定
+# チャンネル設定
 $ vim mirakurun/conf/channels.yml
+# Mirakurun のチャンネルスキャンを使う場合(GR)
+$ curl -X PUT "http://localhost:40772/api/config/channels/scan"
 
-#コメントアウトされている restart や user の設定を適宜変更する
+# コメントアウトされている restart や user の設定を適宜変更する
 $ vim docker-compose.yml
 ```
 
