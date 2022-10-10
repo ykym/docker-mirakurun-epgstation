@@ -1,14 +1,20 @@
-FROM node:14-buster-slim
+FROM node:16-buster-slim
 EXPOSE 40772
-ENV DOCKER="YES"
-ENV DEV="libpcsclite-dev build-essential curl libssl-dev yasm libtool autoconf pkg-config gcc git g++ make automake"
+ENV DOCKER "YES"
+ENV DEV "libpcsclite-dev build-essential curl libssl-dev yasm libtool autoconf pkg-config gcc git g++ make automake"
+ENV UDEV off 
 
-ADD ./libaribb25 /usr/local/libaribb25
-ADD ./recfriio.diff /tmp/recfriio.diff
+COPY ./libaribb25 /usr/local/libaribb25
+COPY ./recfriio.diff /tmp/recfriio.diff
+COPY ./udev_start.sh /usr/bin/udev_start.sh
+#COPY ./dvb-tools_1.16.3-3_amd64.deb /tmp/dvb-tools_1.16.3-3_amd64.deb
 
 RUN apt-get update && \
-    apt-get -y install pcscd libpcsclite1 libccid pcsc-tools libboost-all-dev libboost-thread-dev libboost-filesystem-dev libglib2.0-dev libusb-dev psmisc dvb-tools && \
+    apt-get -y install pcscd libpcsclite1 libccid pcsc-tools libboost-all-dev libboost-thread-dev libboost-filesystem-dev libglib2.0-dev libusb-dev psmisc dvb-tools udev procps && \
     apt-get -y install $DEV && \
+\
+    chmod 755 /usr/bin/udev_start.sh && \
+    #dpkg -i /tmp/dvb-tools_1.16.3-3_amd64.deb && \
 \
 # libaribb25
 \
@@ -28,13 +34,14 @@ sh -c cat | b25 -v 0 /dev/stdin /dev/stdout | cat' > /usr/local/bin/arib-b25-str
     git clone https://github.com/epgdatacapbon/recdvb /tmp/recdvb && \
     cd /tmp/recdvb && \
     ./autogen.sh && \
-    ./configure --enable-b25 && \
+    ./configure && \
     make && \
     make install && \
 \
 # recpt1
 \
     git clone https://github.com/stz2012/recpt1 /tmp/recpt1 && \
+    #git clone https://github.com/yt4687/recpt1 /tmp/recpt1 && \
     cd /tmp/recpt1/recpt1 && \
     sed -i -e 's/arib25/aribb25/g' configure.ac && \
     sed -i -e 's/arib25/aribb25/g' -e 's/HAVE_LIBARIB25/HAVE_LIBARIBB25/g' -e '/#include <aribb25\/arib_std_b25.h>/a#include <aribb25\/arib_std_b25_error_code.h>' decoder.h && \
@@ -45,51 +52,10 @@ sh -c cat | b25 -v 0 /dev/stdin /dev/stdout | cat' > /usr/local/bin/arib-b25-str
     make && \
     make install && \
 \
-# bondriver & recbond
-\
-    mkdir /usr/local/lib/BonDriver/ && \
-    git clone https://github.com/u-n-k-n-o-w-n/BonDriverProxy_Linux /tmp/BonDriverProxy_Linux && \
-    cd /tmp/BonDriverProxy_Linux && \
-    make clean && \
-    make client && \
-    cp -rp BonDriver_Proxy.so /usr/local/lib/BonDriver/BonDriver_Proxy-S0.so && \
-    cp -rp BonDriver_Proxy.so /usr/local/lib/BonDriver/BonDriver_Proxy-T0.so && \
-    echo ';OPTION\n\
-ADDRESS=bondriverproxy\n\
-PORT=1192\n\
-BONDRIVER=PT-S\n\
-CHANNEL_LOCK=200\n\
-CONNECT_TIMEOUT=30\n\
-USE_MAGICPACKET=0\n\
-\n\
-;SYSTEM\n\
-PACKET_FIFO_SIZE=32\n\
-TS_FIFO_SIZE=64\n\
-TSPACKET_BUFSIZE=192512' > /usr/local/lib/BonDriver/BonDriver_Proxy-S0.so.conf && \
-    echo ';OPTION\n\
-ADDRESS=bondriverproxy\n\
-PORT=1192\n\
-BONDRIVER=PT-T\n\
-CHANNEL_LOCK=200\n\
-CONNECT_TIMEOUT=30\n\
-USE_MAGICPACKET=0\n\
-\n\
-;SYSTEM\n\
-PACKET_FIFO_SIZE=32\n\
-TS_FIFO_SIZE=64\n\
-TSPACKET_BUFSRZE=192512' > /usr/local/lib/BonDriver/BonDriver_Proxy-T0.so.conf && \
-\
-    git clone https://github.com/ykym/recbond /tmp/recbond && \
-    cd /tmp/recbond && \
-    ./autogen.sh && \
-    ./configure --enable-b25 && \
-    make clean && \
-    make && \
-    make install && \
-\
 # recfsusb2n
 \
-    git clone https://github.com/epgdatacapbon/recfsusb2n /tmp/recfsusb2n && \
+    #git clone https://github.com/epgdatacapbon/recfsusb2n /tmp/recfsusb2n && \
+    git clone https://github.com/toisme/recfsusb2n /tmp/recfsusb2n && \
     cd /tmp/recfsusb2n/src && \
     make B25=1 && \
     make install && \
@@ -121,7 +87,7 @@ TSPACKET_BUFSRZE=192512' > /usr/local/lib/BonDriver/BonDriver_Proxy-T0.so.conf &
     npm install arib-b25-stream-test -g --unsafe && \
 \
 # mirakurun
-    npm install mirakurun -g --unsafe --production && \
+    npm install mirakurun@3.8.1 -g --unsafe --production && \
 \
 # 不要なパッケージを削除
 \
@@ -141,5 +107,6 @@ TSPACKET_BUFSRZE=192512' > /usr/local/lib/BonDriver/BonDriver_Proxy-T0.so.conf &
 WORKDIR /usr/local/lib/node_modules/mirakurun
 
 ENTRYPOINT /etc/init.d/pcscd start && \
+    /usr/bin/udev_start.sh && \
     npm start
 

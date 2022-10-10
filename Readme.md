@@ -1,14 +1,15 @@
 docker-mirakurun-epgstation
 ====
 
-[Mirakurun](https://github.com/Chinachu/Mirakurun) + [EPGStation](https://github.com/l3tnun/EPGStation) の Docker コンテナ
+[Mirakurun](https://github.com/Chinachu/Mirakurun) v3.8.1 + [EPGStation](https://github.com/l3tnun/EPGStation) v1系 の Docker コンテナ
+
+訳あって古いバージョンを動かしたい
 
 ## 前提条件
 
 Docker, docker-compose の導入が必須
 
-PT3 + [m-tsudo/pt3](https://github.com/m-tsudo/pt3) 、PX-Q3PE4、BonDriverProxyClientなど、複数の組み合わせを想定しているため
-recpt1/recbond/libaribb25 を導入する
+PT3 + [m-tsudo/pt3](https://github.com/m-tsudo/pt3) 、PX-Q3PE4、さんぱくん外出など、複数の組み合わせを想定しているため recpt1/recfsusb2n/libaribb25 を導入する
 
 ホスト上の pcscd は停止する
 

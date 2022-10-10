@@ -11,15 +11,19 @@ services:
         ports:
             - "40772:40772"
             - "9229:9229"
-        #extra_hosts:
-            #- "bondriverproxy:172.17.0.1" # BonDriverProxy Server
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - ./mirakurun/conf:/usr/local/etc/mirakurun
             - ./mirakurun/db:/usr/local/var/db/mirakurun
-        environment:
-            TZ: "Asia/Tokyo"
         devices:
+            - /dev/pt1video0:/dev/pt1video0
+            - /dev/pt1video1:/dev/pt1video1
+            - /dev/pt1video2:/dev/pt1video2
+            - /dev/pt1video3:/dev/pt1video3
+            - /dev/pt1video4:/dev/pt1video4
+            - /dev/pt1video5:/dev/pt1video5
+            - /dev/pt1video6:/dev/pt1video6
+            - /dev/pt1video7:/dev/pt1video7
             - /dev/pt3video0:/dev/pt3video0
             - /dev/pt3video1:/dev/pt3video1
             - /dev/pt3video2:/dev/pt3video2
@@ -37,11 +41,15 @@ services:
             - /dev/px4video6:/dev/px4video6
             - /dev/px4video7:/dev/px4video7
             - /dev/dvb:/dev/dvb
+            - /dev/bus/usb:/dev/bus/usb 
             #- /dev/bus/usb/00x/00x # card reader
+        environment:
+            TZ: "Asia/Tokyo"
+            UDEV: "1"
         restart: always
 
     mysql:
-        image: mariadb:10.4
+        image: mariadb:10.5
         container_name: mysql
         volumes:
             - mysql-db:/var/lib/mysql
@@ -51,7 +59,7 @@ services:
             MYSQL_ROOT_PASSWORD: epgstation
             MYSQL_DATABASE: epgstation
             TZ: "Asia/Tokyo"
-        command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --performance-schema=false --expire_logs_days=1
+        command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --performance-schema=false --expire_logs_days=1
         restart: always
 
     epgstation:
