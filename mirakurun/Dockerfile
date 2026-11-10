@@ -1,20 +1,22 @@
 FROM node:16-buster-slim
 EXPOSE 40772
 ENV DOCKER "YES"
-ENV DEV "libpcsclite-dev build-essential curl libssl-dev yasm libtool autoconf pkg-config gcc git g++ make automake"
+ENV DEV "libpcsclite-dev build-essential curl libssl-dev yasm libtool autoconf pkg-config gcc git g++ make automake golang-go"
 ENV UDEV off 
 
 COPY ./libaribb25 /usr/local/libaribb25
 COPY ./recfriio.diff /tmp/recfriio.diff
 COPY ./udev_start.sh /usr/bin/udev_start.sh
-#COPY ./dvb-tools_1.16.3-3_amd64.deb /tmp/dvb-tools_1.16.3-3_amd64.deb
+
+RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list && \
+    sed -i 's|security.debian.org/debian-security|archive.debian.org/debian-security|g' /etc/apt/sources.list && \
+    sed -i '/stretch-updates/d' /etc/apt/sources.list
 
 RUN apt-get update && \
     apt-get -y install pcscd libpcsclite1 libccid pcsc-tools libboost-all-dev libboost-thread-dev libboost-filesystem-dev libglib2.0-dev libusb-dev psmisc dvb-tools udev procps && \
     apt-get -y install $DEV && \
 \
     chmod 755 /usr/bin/udev_start.sh && \
-    #dpkg -i /tmp/dvb-tools_1.16.3-3_amd64.deb && \
 \
 # libaribb25
 \
@@ -28,6 +30,13 @@ RUN apt-get update && \
     echo '#!/bin/sh\n\
 sh -c cat | b25 -v 0 /dev/stdin /dev/stdout | cat' > /usr/local/bin/arib-b25-stream.sh && \
     chmod +x /usr/local/bin/arib-b25-stream.sh && \
+\
+# go-dvb
+\
+    git clone https://github.com/ziutek/dvb /tmp/go-dvb && \
+    cd /tmp/go-dvb && \
+    env CGO_ENABLED=0 go build -o dvb-tune examples/tune/main.go && \
+    cp -rp dvb-tune /usr/local/bin/ && \
 \
 # recdvb
 \
@@ -80,6 +89,7 @@ sh -c cat | b25 -v 0 /dev/stdin /dev/stdout | cat' > /usr/local/bin/arib-b25-str
 \
 # pm2
 \
+    npm install npm@6 -g && \
     npm install pm2 -g && \
 \
 # arib-b25-stream-test
@@ -96,8 +106,7 @@ sh -c cat | b25 -v 0 /dev/stdin /dev/stdout | cat' > /usr/local/bin/arib-b25-str
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp/libaribb25 && \
-    rm -rf /tmp/BonDriverProxy_Linux && \
-    rm -rf /tmp/recbond && \
+    rm -rf /tmp/go-dvb && \
     rm -rf /tmp/recdvb && \
     rm -rf /tmp/recfsusb2n && \
     rm -rf /tmp/recfsusb2n-k0905 && \

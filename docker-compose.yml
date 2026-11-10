@@ -45,7 +45,6 @@ services:
             #- /dev/bus/usb/00x/00x # card reader
         environment:
             TZ: "Asia/Tokyo"
-            UDEV: "1"
         restart: always
 
     mysql:

@@ -3,6 +3,10 @@ EXPOSE 8888
 ARG CPUCORE="1"
 ENV DEV="make gcc git g++ automake curl wget autoconf build-essential python3 python3-yaml" 
 
+RUN sed -i 's/deb.debian.org/archive.debian.org/g' /etc/apt/sources.list && \
+    sed -i 's|security.debian.org/debian-security|archive.debian.org/debian-security|g' /etc/apt/sources.list && \
+    sed -i '/stretch-updates/d' /etc/apt/sources.list
+
 RUN apt-get update && \
     apt-get -y install $DEV && \
     apt-get -y install openssh-client rsync nkf && \
@@ -27,8 +31,8 @@ RUN apt-get update && \
     git clone https://github.com/l3tnun/EPGStation.git && \
     cd /usr/local/EPGStation && \
     git checkout v1 && \
+    npm install npm@6 -g && \
     npm install --no-save && \
-#
     npm run build && \
 \
 # 不要なパッケージを削除
